@@ -45,11 +45,8 @@ jobs:
         run: python -m playwright install --with-deps chromium
       - name: Run Playwright tests
         continue-on-error: true
-        # run: pytest single_advanced_practice.py --browser-channel msedge --junit-xml results/pytest.xml
-        # run: pytest single_advanced_practice.py --browser-channel msedge --junit-xml=.test_report_official.xml
-        # run: pytest --tesults-target ${{secrets.TESULTS_TOKEN}} single_advanced_practice.py  --browser-channel msedge
-        # run: pytest single_advanced_practice.py --html=report.html --self-contained-html
-        run: pytest test_kadai.py --browser-channel msedge-dev --alluredir=allure-results
+
+        run: pytest test_kadai.py --browser-channel msedge --alluredir=allure-results
 
       - name: Test Report Output
         uses: simple-elf/allure-report-action@v1.8
@@ -62,28 +59,28 @@ jobs:
           allure_history: allure-history
           keep_reports: 20
 
-        continue-on-error: true
-      - name: store allure results
-        uses: actions/upload-artifact@v3
-        with:
-          name: allure-report
-          path: allure-report
-          retention-days: 1
-
-      # - name: Deploy report to Github Pages
-      #   if: always()
-      #   uses: peaceiris/actions-gh-pages@v2
-      #   env:
-      #     PERSONAL_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-      #     PUBLISH_BRANCH: gh-pages
-      #     PUBLISH_DIR: allure-history
-      # - name: Get Allure history
-      #   uses: actions/checkout@v4
-      #   if: always()
       #   continue-on-error: true
+      # - name: store allure results
+      #   uses: actions/upload-artifact@v3
       #   with:
-      #     ref: gh-pages
-      #     path: gh-pages
+      #     name: allure-report
+      #     path: allure-report
+      #     retention-days: 1
+
+      - name: Deploy report to Github Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v2
+        env:
+          PERSONAL_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history
+      - name: Get Allure history
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
       - name: Build test report
         uses: simple-elf/allure-report-action@v1.8
         if: always()
