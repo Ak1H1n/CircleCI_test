@@ -93,9 +93,9 @@ jobs:
           allure_report: reports/allure-report
           allure_history: reports/allure-report
           keep_reports: 20
-      # - name: Deploy Allure Report to GitHub Pages
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: reports/allure-report
-      #     publish_branch: gh-pages
+      - name: Deploy Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: reports/allure-report
+          publish_branch: gh-pages
