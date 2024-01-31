@@ -18,11 +18,11 @@ jobs:
       # pull-requests: write
     strategy:
       fail-fast: false
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{secrets.MY_GITHUB_TOKEN}}
+    # steps:
+    #   - name: Checkout repository
+    #     uses: actions/checkout@v3
+    #     with:
+    #       token: ${{secrets.MY_GITHUB_TOKEN}}
 
   run_tests:
     runs-on: ubuntu-latest
@@ -48,16 +48,16 @@ jobs:
 
         run: pytest test_kadai.py --browser-channel msedge --alluredir=allure-results
 
-      - name: Test Report Output
-        uses: simple-elf/allure-report-action@v1.8
-        if: always()
-        # id: allure-report
-        with:
-          allure_results: allure-results
-          gh_pages: gh-pages
-          allure_report: allure-report
-          allure_history: allure-history
-          keep_reports: 20
+      # - name: Test Report Output
+      #   uses: simple-elf/allure-report-action@v1.8
+      #   if: always()
+      #   # id: allure-report
+      #   with:
+      #     allure_results: allure-results
+      #     gh_pages: gh-pages
+      #     allure_report: allure-report
+      #     allure_history: allure-history
+      #     keep_reports: 20
 
       #   continue-on-error: true
       # - name: store allure results
@@ -67,13 +67,13 @@ jobs:
       #     path: allure-report
       #     retention-days: 1
 
-      - name: Deploy report to Github Pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v2
-        env:
-          PERSONAL_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-          PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: allure-history
+      # - name: Deploy report to Github Pages
+      #   if: always()
+      #   uses: peaceiris/actions-gh-pages@v2
+      #   env:
+      #     PERSONAL_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+      #     PUBLISH_BRANCH: gh-pages
+      #     PUBLISH_DIR: allure-history
       - name: Get Allure history
         uses: actions/checkout@v4
         if: always()
@@ -91,9 +91,9 @@ jobs:
           # allure_report: reports/allure-report
           allure_history: reports/allure-report
           keep_reports: 20
-      - name: Deploy Allure Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: reports/allure-report
-          publish_branch: gh-pages
+      # - name: Deploy Allure Report to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: reports/allure-report
+      #     publish_branch: gh-pages
