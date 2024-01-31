@@ -47,7 +47,7 @@ jobs:
         continue-on-error: true
 
         # run: pytest test_kadai.py --browser-channel msedge --alluredir=allure-results
-        run: pytest test_data_object.py --browser-channel msedge --alluredir=allure-results
+        run: pytest test_data_driven.py --browser-channel msedge --alluredir=allure-results
 
 
       # - name: Test Report Output
