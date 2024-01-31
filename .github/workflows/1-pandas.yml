@@ -49,7 +49,7 @@ jobs:
         continue-on-error: true
 
         # run: pytest test_kadai.py --browser-channel msedge --alluredir=allure-results
-        run: pytest test_kadai.py --browser-channel msedge --alluredir=allure-results
+        run: pytest single_advanced_practice.py --browser-channel msedge --alluredir=allure-results
 
       - name: Commit Files
         uses: stefanzweifel/git-auto-commit-action@v5
