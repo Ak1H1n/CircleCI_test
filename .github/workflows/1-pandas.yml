@@ -49,6 +49,12 @@ jobs:
         # run: pytest test_kadai.py --browser-channel msedge --alluredir=allure-results
         run: pytest test_kadai.py --browser-channel msedge --alluredir=allure-results
 
+      - name: Commit Files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          push_options: "--force-with-lease"
+          commit_message: commit
+
 
       # - name: Test Report Output
       #   uses: simple-elf/allure-report-action@v1.8
