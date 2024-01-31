@@ -29,6 +29,8 @@ jobs:
 
     steps:
       - name: Checkout repository
+        with:
+          token: ${{secrets.MY_GITHUB_TOKEN}}
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -102,6 +104,6 @@ jobs:
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           publish_dir: reports/allure-report
           publish_branch: gh-pages
