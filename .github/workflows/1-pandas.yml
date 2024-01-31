@@ -1,0 +1,219 @@
+name: Automated Tests
+
+on:
+  #   push:
+  #     branches:
+  #       - main
+  workflow_dispatch:
+  #   inputs:
+  #     mail:
+  #       description: メールアドレスの指定
+  #       default: test
+  #       required: true
+  #       type: choice
+  #       options:
+  #         - test
+  #         - ex
+  #         - tt
+
+jobs:
+  generate_csv:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+      pull-requests: write
+      # pull-requests: write
+    strategy:
+      fail-fast: false
+    #   matrix:
+    #     test_suite:
+    #       - suite_1
+    #       - suite_2
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{secrets.MY_GITHUB_TOKEN}}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          architecture: "x64"
+      - name: Install dependencies
+        run: |
+          pip install pandas
+          python -m pip install --upgrade pip
+        # 該当のCSVファイルが存在する（差分がない）場合は作成をスキップする処理を入れたい
+      - name: csv create 1
+        id: case1
+        run: python generate_csv.py
+        env:
+          EMAIL_1: test
+          EMALI_2: tsts
+          EMAIL_3: tset
+          PASSWORD_1: pass
+          PASSWORD_2: "!ps"
+          PASSWORD_3: xe!
+          INDEX_END_1: 5
+          INDEX_END_2: 10
+          INDEX_END_3: 15
+          INDEX_START_ALL: 1
+          FILENAME: 1
+      - name: create csv 2
+        id: case2
+        run: python generate_csv.py
+        env:
+          EMAIL_1: exam
+          EMAIL_2: exex
+          EMAIL_3: maxe
+          PASSWORD_1: dorw
+          PASSWORD_2: ssap
+          PASSWORD_3: "!ex"
+          INDEX_END_1: 2
+          INDEX_END_2: 7
+          INDEX_END_3: 13
+          INDEX_START_ALL: 1
+          FILENAME: 2
+
+      - name: Commit CSV Files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          push_options: "--force-with-lease"
+          commit_message: create and upload csv
+
+  run_tests:
+    needs: generate_csv
+    runs-on: ubuntu-latest
+    # strategy:
+    #   matrix:
+    #     test_suite:
+    #       - suite_1
+    #       - suite_2
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          architecture: "x64"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r -requirements.txt
+      - name: Ensure browsers are installed
+        run: python -m playwright install --with-deps chromium
+      - name: Run Playwright tests
+        continue-on-error: true
+        # if: matrix.test_suite == 'suite_1'
+        # run: pytest single_advanced_practice.py --browser-channel msedge --junit-xml results/pytest.xml
+        # run: pytest single_advanced_practice.py --browser-channel msedge --junit-xml=.test_report_official.xml
+        # run: pytest --tesults-target ${{secrets.TESULTS_TOKEN}} single_advanced_practice.py  --browser-channel msedge
+        # run: pytest single_advanced_practice.py --html=report.html --self-contained-html
+        run: pytest single_advanced_practice.py --browser-channel msedge-dev --alluredir=allure-results --self-contained-html
+
+      - name: Test Report Output
+        uses: simple-elf/allure-report-action@v1.8
+        if: always()
+        # id: allure-report
+        with:
+          allure_results: allure-results
+          # gh_pages: gh-pages
+          # allure_report: allure-report
+          allure_history: allure-history
+          # keep_reports: 20
+
+      #   continue-on-error: true
+      - name: store allure results
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-report
+          path: allure-report
+          retention-days: 1
+
+      # run: pytest single_advanced_practice.py --browser-channel msedge
+
+      #  ${{ matrix.file }}
+      # env:
+      #   filename: 1
+      # - name: Archive HTML report
+      #   uses: actions/upload-artifact@v2
+      #   continue-on-error: true
+      #   with:
+      #     name: test-report
+      #     path: report.html
+
+      # - name: Send to Allure Docker Service
+      #   env:
+      #     ALLURE_SERVER_URL: ${{ secrets.ALLURE_SERVER_URL }}
+      #     # ALLURE_SERVER_USER: ${{ secrets.ALLURE_SERVER_USER }}
+      #     # ALLURE_SERVER_PASSWORD: ${{ secrets.ALLURE_SERVER_PASSWORD }}
+      #   uses: unickq/send-to-allure-docker-service-action@v1.2
+      #   with:
+      #     allure_results: allure-results
+      #     project_id: try-test-prj
+      #     auth: true
+      #     generate: true
+
+      # - name: Test Summary
+      #   id: test_summary
+      #   uses: test-summary/action@v2.2
+      #   if: always() # always run, even if tests fail
+      #   with:
+      #     paths: .test_report_official.xml
+
+      # ここから
+      # - name: Publish Test Results
+      #   uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      #   if: always()
+      #   with:
+      #     junit_files: |
+      #       results/*.xml
+      # ここまで
+      # - name: Remove successful CSV files
+      #   if: success()
+      #   run: rm *.csv
+      # - name: Handle CSV files based on test result
+      #   uses: JesseTG/rm@v1.0.3
+      #   with:
+      #     path: "address.csv"
+      # run: |
+      #   if [ ${{ job.status }} == 'success' ]; then
+      #テストが成功した場合、最後に使用したCSVファイルだけを削除
+
+      # - name: Deploy report to Github Pages
+      #   if: always()
+      #   uses: peaceiris/actions-gh-pages@v2
+      #   env:
+      #     PERSONAL_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+      #     PUBLISH_BRANCH: gh-pages
+      #     PUBLISH_DIR: allure-history
+      # - name: Get Allure history
+      #   uses: actions/checkout@v4
+      #   if: always()
+      #   continue-on-error: true
+      #   with:
+      #     ref: gh-pages
+      #     path: gh-pages
+      # - name: Build test report
+      #   uses: simple-elf/allure-report-action@v1.8
+      #   if: always()
+      #   id: allure-report
+      #   with:
+      #     allure_results: allure-results/
+      #     gh_pages: gh-pages
+      #     # allure_report: reports/allure-report
+      #     allure_history: reports/allure-report
+      #     keep_reports: 20
+      # - name: Deploy Allure Report to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: reports/allure-report
+      #     publish_branch: gh-pages
