@@ -1,0 +1,10 @@
+﻿case_no,date_from,days,headcount,breakfast,early_checkin,sightseeing,username,contact,total,tel_number,email_address
+case1,2024/2/10,8,1,あり,あり,あり,テスト太郎,email,"69,500",12345678910,test@example.com
+case2,2024/2/11,7,2,あり,あり,なし,TaroTest,no,"121,000",,
+case3,2024/2/12,6,3,あり,なし,あり,テスト太郎,tel,"152,250",12345678910,
+case4,2024/2/13,5,4,あり,なし,なし,TaroTest,no,"160,000",,
+case5,2024/2/14,4,5,なし,あり,あり,テスト太郎,no,"150,000",12345678910,test@example.com
+case6,2024/2/15,3,6,なし,あり,なし,TaroTest,no,"132,000",,
+case7,2024/2/16,2,7,なし,なし,あり,テスト太郎,email,"105,000",,test@example.com
+case8,2024/2/17,1,8,なし,なし,なし,TaroTest,no,"56,000",,
+case9,2024/2/18,2,3,あり,あり,あり,テスト太郎,tel,"64,500",12345678910,test@example.com
