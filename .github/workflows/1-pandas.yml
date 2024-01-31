@@ -8,21 +8,21 @@ on:
 
 
 jobs:
-  generate_csv:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      issues: read
-      checks: write
-      pull-requests: write
-      # pull-requests: write
-    strategy:
-      fail-fast: false
-    # steps:
-    #   - name: Checkout repository
-    #     uses: actions/checkout@v3
-    #     with:
-    #       token: ${{secrets.MY_GITHUB_TOKEN}}
+  # generate_csv:
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     issues: read
+  #     checks: write
+  #     pull-requests: write
+  #     # pull-requests: write
+  #   strategy:
+  #     fail-fast: false
+  #   # steps:
+  #   #   - name: Checkout repository
+  #   #     uses: actions/checkout@v3
+  #   #     with:
+  #   #       token: ${{secrets.MY_GITHUB_TOKEN}}
 
   run_tests:
     runs-on: ubuntu-latest
